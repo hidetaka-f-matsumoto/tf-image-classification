@@ -1,0 +1,8 @@
+.DS_Store
+dataset/train/*
+dataset/validation/*
+dataset/test/*
+assets/*
+models/*
+out/*
+!**/.keep
