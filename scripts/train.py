@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument('-s', '--size', required=True, type=int, default=480, help='width and height of image')
     return parser.parse_args()
 
-def train(dataset_dir, input_width, input_height):
+def train(dataset_dir, input_width, input_height, epochs=10):
     model = models.Sequential()
 
     model.add(layers.Conv2D(64, (3, 3), activation='relu', padding='same', input_shape=(input_width, input_height, 3)))
@@ -36,8 +36,8 @@ def train(dataset_dir, input_width, input_height):
 
     model.summary()
 
-    train_dir = './{dataset_dir}/train'.format(dataset_dir=dataset_dir)
-    validation_dir = './{dataset_dir}/validation'.format(dataset_dir=dataset_dir)
+    train_dir = '{dataset_dir}/train'.format(dataset_dir=dataset_dir)
+    validation_dir = '{dataset_dir}/validation'.format(dataset_dir=dataset_dir)
 
     # 回転や拡大縮小によりデータ数を水増し
     train_datagen = ImageDataGenerator(
@@ -67,10 +67,10 @@ def train(dataset_dir, input_width, input_height):
 
     history = model.fit_generator(
         train_generator,
-        steps_per_epoch=100,
-        epochs=10,
+        steps_per_epoch=93,
+        epochs=epochs,
         validation_data=validation_generator,
-        validation_steps=10,
+        validation_steps=13,
         callbacks=[CSVLogger('training.log')])
 
     return model, history
@@ -79,7 +79,10 @@ if __name__ == "__main__":
     args = parse_args()
     model, history = train(args.dataset, args.size, args.size)
     if args.model:
-        # 処理時間が長いため途中から再開できるようできた学習モデルを保存しておく
+        if not os.path.exists(args.model):
+            os.makedirs(args.model)
+
         model.save(args.model)
-        hist_df = pd.DataFrame(history.history)
-        hist_df.to_csv('{model_dir}/train_history.csv'.format(model_dir=args.model))
+
+    hist_df = pd.DataFrame(history.history)
+    hist_df.to_csv('{model_dir}/train_history.csv'.format(model_dir=args.model))

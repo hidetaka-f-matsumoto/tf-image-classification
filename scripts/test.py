@@ -1,9 +1,7 @@
 import os
 import glob
 import argparse
-from skimage import io
 import numpy as np
-from skimage.transform import resize
 import tensorflow as tf
 from tensorflow.keras import models
 from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img

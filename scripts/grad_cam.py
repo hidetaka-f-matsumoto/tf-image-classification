@@ -103,4 +103,3 @@ if __name__ == "__main__":
     elif args.image:
         exec(model, args.image, (args.size, args.size), args.layer,
             show=args.show, output=args.output)
-
